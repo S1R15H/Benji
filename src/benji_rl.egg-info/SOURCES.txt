@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/__init__.py
+src/agent/__init__.py
+src/benji_rl.egg-info/PKG-INFO
+src/benji_rl.egg-info/SOURCES.txt
+src/benji_rl.egg-info/dependency_links.txt
+src/benji_rl.egg-info/requires.txt
+src/benji_rl.egg-info/top_level.txt
+src/env/__init__.py
+src/env/scrcpy_client.py

@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.venv
+venv
+env
+
+# Artifacts & Large Files
+logs
+models
+data
+# benji_ppo_interrupted.zip
+# benji_ppo_interrupted_vecnormalize.pkl
+*.zip
+*.pkl
+*.tar.gz
+
+# IDE
+.vscode
+.idea
+.DS_Store
+
+# Documentation
+docs
+REPORT.md
+RESEARCH.md
+ROADMAP.md

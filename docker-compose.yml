@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  benji-agent:
+    build: .
+    container_name: benji_rl_agent
+
+    # "host" network driver is required for ADB to easily find the emulator running on the host
+    # Note: This works best on Linux. On Mac/Windows, you might need to use 'host.docker.internal' in your code
+    # or rely on ADB connecting over TCP (adb connect host.docker.internal:5555).
+
+    volumes:
+      - ./logs:/app/logs
+      - ./models:/app/models
+      # Mount source for dev (optional, allows editing code without rebuild)
+      - ./src:/app/src
+      - ./train.py:/app/train.py
+      - ./benji_ppo_interrupted.zip:/app/benji_ppo_interrupted.zip
+      - ./benji_ppo_interrupted_vecnormalize.pkl:/app/benji_ppo_interrupted_vecnormalize.pkl
+
+    environment:
+      - WANDB_API_KEY=${WANDB_API_KEY} # Pass through if set
+
+    # Keep the container running if you want to exec into it, or run training by default
+    command: python play.py --model benji_ppo_interrupted.zip

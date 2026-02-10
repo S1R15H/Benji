@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: benji-rl
+Version: 0.1.0
+Summary: Autonomous DRL agent for Benji Bananas using Scrcpy and PPO
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: gymnasium>=0.29.1
+Requires-Dist: stable-baselines3>=2.2.1
+Requires-Dist: torch>=2.1.2
+Requires-Dist: opencv-python>=4.9.0
+Requires-Dist: numpy>=1.26.3
+Requires-Dist: wandb>=0.16.2
+Requires-Dist: pydantic>=2.6.0
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+
+# Benji Bananas RL Agent
+
+This project implements a Deep Reinforcement Learning agent to play *Benji Bananas*.
+
+## Prerequisites
+
+Before running the code, you must install the following system dependencies.
+
+### 1. Install Android Tools and Scrcpy
+The project relies on `scrcpy` for low-latency screen capture.
+
+**On macOS (Homebrew):**
+```bash
+brew install android-platform-tools scrcpy ffmpeg
+```
+
+### 2. Connect Android Device
+1. Enable **Developer Options** and **USB Debugging** on your Android device (or Emulator).
+2. Connect via USB.
+3. Verify connection:
+   ```bash
+   adb devices
+   ```
+   *You should see a device ID listed.*
+
+### 3. Install Python Dependencies
+```bash
+pip install -e .[dev]
+```
+
+## Usage
+(To be added)

@@ -1,0 +1,37 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Logs and Data
+logs/
+*.log
+
+# Models & Checkpoints
+models/
+*.zip
+*.pkl
+
+# Documentation (User Request)
+Research.md
+ROADMAP.md
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local Dev
+.env

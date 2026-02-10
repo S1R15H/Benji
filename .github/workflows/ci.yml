@@ -1,0 +1,44 @@
+name: Benji RL CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install project + dev dependencies
+        pip install ".[dev]"
+        # Install system deps for OpenCV
+        sudo apt-get update
+        sudo apt-get install -y libgl1
+        
+    - name: Lint with Ruff
+      run: |
+        # Check for syntax errors or undefined names
+        ruff check src/ tests/
+        
+    - name: Run Units Tests
+      run: |
+        # We only run tests that DON'T require a physical device
+        # If verify_gym_env.py tries to connect, it will fail.
+        # Recommendation: Set an env var to force "Offline" mode for tests
+        export TESTING_MODE="true"
+        pytest tests/
