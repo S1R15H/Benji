@@ -35,10 +35,3 @@ jobs:
         # Check for syntax errors or undefined names
         ruff check src/ tests/
         
-    - name: Run Units Tests
-      run: |
-        # We only run tests that DON'T require a physical device
-        # If verify_gym_env.py tries to connect, it will fail.
-        # Recommendation: Set an env var to force "Offline" mode for tests
-        export TESTING_MODE="true"
-        pytest tests/

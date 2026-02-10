@@ -5,7 +5,6 @@ import time
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 
-import gymnasium as gym
 from gymnasium.utils.env_checker import check_env
 from env.benji_env import BenjiBananasEnv
 

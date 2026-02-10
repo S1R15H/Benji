@@ -18,6 +18,7 @@ env/
 # Logs and Data
 logs/
 *.log
+data/
 
 # Models & Checkpoints
 models/

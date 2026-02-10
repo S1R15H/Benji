@@ -8,7 +8,6 @@ import cv2
 sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 
 from env.reward import BenjiReward
-from env.reward import DigitRecognizer
 
 def generate_mock_assets(digits_dir):
     """

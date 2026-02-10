@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from stable_baselines3.common.vec_env import VecFrameStack, DummyVecEnv, VecTransposeImage, VecNormalize
+from stable_baselines3.common.vec_env import VecFrameStack, DummyVecEnv, VecNormalize
 from stable_baselines3.common.callbacks import CheckpointCallback
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 import torch

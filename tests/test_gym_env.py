@@ -1,8 +1,5 @@
 import sys
 import os
-import time
-import pytest
-import gymnasium as gym
 from gymnasium.utils.env_checker import check_env
 
 # Add src to path
