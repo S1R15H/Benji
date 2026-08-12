@@ -45,7 +45,6 @@ def main():
         banana_val = components.get("raw_bananas", 0)
         
         # 2. Visualization Setup
-        # 2. Visualization Setup
         # Canvas: 1100x600 (Compact)
         canvas = np.zeros((600, 1100, 3), dtype=np.uint8)
         

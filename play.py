@@ -3,6 +3,13 @@ import os
 import argparse
 import time
 import numpy as np
+import logging
+
+# Configure Logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
@@ -28,6 +35,13 @@ def main():
         agent = BenjiAgent(model_path=args.model, offline=False)
         env = agent.venv # Use the wrapped vector environment
         
+        print("Warming up model...")
+        # Run a dummy prediction to initialize JIT/kernels
+        # Observation shape must match VecFrameStack (1, 4, 128, 128)
+        dummy_obs = np.zeros((1, 4, 128, 128), dtype=np.uint8)
+        agent.model.predict(dummy_obs, deterministic=True)
+        print("Model ready.")
+
         print("Starting Play Loop...")
         
         for ep in range(args.episodes):

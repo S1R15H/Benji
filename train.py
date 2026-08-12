@@ -9,14 +9,21 @@ from agent.model import BenjiAgent
 
 def main():
     parser = argparse.ArgumentParser(description="Train Benji Bananas RL Agent")
-    parser.add_argument("--steps", type=int, default=1000000, help="Total timesteps to train")
-    parser.add_argument("--save_freq", type=int, default=100000, help="Checkpoint frequency")
+    parser.add_argument("--steps", type=int, default=100000, help="Total timesteps to train")
+    parser.add_argument("--save_freq", type=int, default=20000, help="Checkpoint frequency")
     parser.add_argument("--model", type=str, default=None, help="Path to existing model to load")
     parser.add_argument("--tensorboard", type=str, default="./logs/", help="Tensorboard log dir")
-    parser.add_argument("--lr", type=float, default=2.5e-4, help="Learning Rate")
+    parser.add_argument("--lr", type=float, default=1e-4, help="Learning Rate")
     
     args = parser.parse_args()
     
+    # Suppress verbose environment logs
+    import logging
+    logging.getLogger("env.scrcpy_client").setLevel(logging.WARNING)
+    logging.getLogger("env.control_client").setLevel(logging.WARNING)
+    logging.getLogger("env.benji_env").setLevel(logging.WARNING)
+    logging.getLogger("env.reward").setLevel(logging.WARNING)
+
     print("Initializing Agent...")
     agent = BenjiAgent(
         model_path=args.model,

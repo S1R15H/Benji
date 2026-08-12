@@ -70,12 +70,7 @@ class BenjiAgent:
         self.env = BenjiBananasEnv(offline=offline)
         self.env = Monitor(self.env) # Add Monitor Wrapper
         
-        if offline:
-             # In offline mode, maybe we strictly need DummyVecEnv
-             pass
-        
         self.venv = DummyVecEnv([lambda: self.env])
-        # self.venv = VecTransposeImage(self.venv) # Removed: Env now outputs (C, H, W) directly
         self.venv = VecFrameStack(self.venv, n_stack=4)
         
 
@@ -98,37 +93,46 @@ class BenjiAgent:
 
         # 2. Initialize Model
         self.continue_training = False
+        
+        # Define Hyperparameters (Optimized for faster feedback loops)
+        # Reducing n_steps from 2048 -> 512 to update 4x more frequently
+        # This helps especially with high entropy, allowing the policy to adapt to discoveries faster
+        ppo_kwargs = {
+            "policy": "CnnPolicy",
+            "env": self.venv,
+            "verbose": 1,
+            "learning_rate": learning_rate,
+            "n_steps": 512,      # Reduced buffer size for faster updates (~1 min gameplay)
+            "batch_size": 64,    # Reduced batch size to match
+            "n_epochs": 10,
+            "gamma": 0.99,
+            "clip_range": 0.1,
+            "ent_coef": 0.05,
+            "tensorboard_log": tensorboard_log,
+            "policy_kwargs": {
+                "features_extractor_class": CustomCNN,
+                "features_extractor_kwargs": {"features_dim": 512},
+                "normalize_images": True
+            }
+        }
+
+        print("Initializing PPO Agent with optimized hyperparameters (n_steps=512, ent_coef=0.05)...")
+        self.model = PPO(**ppo_kwargs)
+        
         if model_path and os.path.exists(model_path):
-            print(f"Loading model from {model_path}")
-            self.model = PPO.load(model_path, env=self.venv, tensorboard_log=tensorboard_log)
+            print(f"Loading weights from {model_path} into optimized agent...")
+            # Load old model to extract weights
+            # We use custom_objects to prevent loading old conflicting hyperparameters if possible,
+            # but cleaner to just load weights.
+            old_model = PPO.load(model_path, device='auto')
+            self.model.set_parameters(old_model.get_parameters())
+            
             self.continue_training = True
             
-            # Override Learning Rate for Fine-tuning
-            print(f"Setting Learning Rate to {learning_rate}")
-            from stable_baselines3.common.utils import get_schedule_fn
+            # Update learning rate if needed (already set in constructor, but good to confirm)
             self.model.learning_rate = learning_rate
+            from stable_baselines3.common.utils import get_schedule_fn
             self.model.lr_schedule = get_schedule_fn(learning_rate)
-        else:
-            print("Initializing new PPO Agent (CustomCNN + VecNormalize)...")
-            # Hyperparameters from Phase 3 SOTA Plan (Tuned for Speed)
-            self.model = PPO(
-                "CnnPolicy",
-                self.venv,
-                verbose=1,
-                learning_rate=learning_rate,
-                n_steps=2048,   # Rollout Buffer Size (Collect-Then-Train)
-                batch_size=128, # Mini-batch size
-                n_epochs=10,    # Review buffer 10 times
-                gamma=0.99, 
-                clip_range=0.2,
-                ent_coef=0.05, # Increased to 0.05
-                tensorboard_log=tensorboard_log,
-                policy_kwargs={
-                    "features_extractor_class": CustomCNN,
-                    "features_extractor_kwargs": {"features_dim": 512},
-                    "normalize_images": True
-                }
-            )
 
 
     def train(self, total_timesteps: int = 100000, save_freq: int = 10000, save_path: str = "./models/"):
@@ -154,11 +158,28 @@ class BenjiAgent:
         # Combine callbacks
         callbacks = [checkpoint_callback, tb_callback, pause_callback]
         
+        # Force a new PPO_N directory even if continuing
+        tb_log_name = "PPO"
+        if self.model.tensorboard_log and os.path.exists(self.model.tensorboard_log):
+            existing = [d for d in os.listdir(self.model.tensorboard_log) if d.startswith("PPO_") and os.path.isdir(os.path.join(self.model.tensorboard_log, d))]
+            nums = []
+            for d in existing:
+                try:
+                    nums.append(int(d.split("_")[1]))
+                except (ValueError, IndexError):
+                    pass
+            if nums:
+                tb_log_name = f"PPO_{max(nums) + 1}"
+            else:
+                tb_log_name = "PPO_1"
+        
         print(f"Starting training for {total_timesteps} steps...")
+        print(f"Logging to {tb_log_name}")
         self.model.learn(
             total_timesteps=total_timesteps, 
             callback=callbacks,
-            reset_num_timesteps=not self.continue_training
+            reset_num_timesteps=not self.continue_training,
+            tb_log_name=tb_log_name
         )
         print("Training complete.")
         

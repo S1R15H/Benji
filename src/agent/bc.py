@@ -18,6 +18,8 @@ def train_bc(epochs=5, batch_size=32, lr=1e-4):
     
     # 1. Load Data
     print("Loading Dataset...")
+    # Ensure we look for dataset in the right place (root or src/agent)
+    # The dataset class usually looks for "bc_dataset.npz"
     dataset = BenjiBCDataset()
     if len(dataset) == 0:
         print("No data found! Run collector.py first.")

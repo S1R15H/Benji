@@ -2,6 +2,9 @@
 
 This project implements a Deep Reinforcement Learning agent to play *Benji Bananas*.
 
+![Benji Demo](preprocessing_test_126_v6.jpg)
+
+
 ## Prerequisites
 
 Before running the code, you must install the following system dependencies.
@@ -47,6 +50,3 @@ The easiest way to run the training is via Docker.
 ```bash
 pip install -e .[dev]
 ```
-
-## Usage
-(To be added)

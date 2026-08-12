@@ -20,10 +20,6 @@ logs/
 *.log
 data/
 
-# Models & Checkpoints
-models/
-*.zip
-*.pkl
 
 # Documentation (User Request)
 Research.md

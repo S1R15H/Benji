@@ -34,4 +34,3 @@ jobs:
       run: |
         # Check for syntax errors or undefined names
         ruff check src/ tests/
-        
